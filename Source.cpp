@@ -1,111 +1,94 @@
-#include <cstring>
-#include <math.h>
-#include <stdio.h>
 #include <iostream>
+#include <string>
 #include <locale>
-#include <fstream>
-using namespace std;
+// Базовый класс "Транспортные средства"
+class TransportVehicle {
+protected:
+    std::string color;
+    std::string brand;
+    std::string model;
+    int year;
+    int horsepower;
+    std::string engineType; // "электрический", "внутреннего сгорания" или "гибридный"
 
-#pragma warning(disable: 4996)
-class Transport
-{
+public:
+    TransportVehicle(const std::string& color, const std::string& brand, const std::string& model,
+        int year, int horsepower, const std::string& engineType)
+        : color(color), brand(brand), model(model), year(year), horsepower(horsepower), engineType(engineType) {}
+
+    virtual void displayInfo() const {
+        std::cout << "Цвет: " << color << "\n"
+            << "Бренд: " << brand << "\n"
+            << "Модель: " << model << "\n"
+            << "Год выпуска: " << year << "\n"
+            << "Лошадиные силы: " << horsepower << "\n"
+            << "Тип двигателя: " << engineType << "\n";
+    }
+};
+
+// Класс "Грузовые транспортные средства"
+class CargoVehicle : public TransportVehicle {
 private:
-    string name;
-    int weight;
-    int date;
-public:
-    Transport(void);
-    Transport(string pname, int w, int d);
-    void SetWeight(int w);
-    void Print();
-    ~Transport(void);
-};
-Transport::Transport(void)
-{
-    name = "Transport";
-    weight = 1990;
-    date = 10;
-}
-Transport::Transport(string pname, int w, int d)
-{
-    name = pname;
-    weight = w;
-    date = d;
-}
-void Transport::SetWeight(int w)
-{
-    weight = w;
-}
-void Transport::Print()
-{
-    cout << "��������: " << name << endl;
-    cout << "���: " << weight << endl;
-    cout << "���������� ���: " << date << endl;
-}
-Transport::~Transport(void)
-{
-    name = '\0';
-    weight = 0;
-    date = 0;
-}
-class Auto : public Transport
-{
+    double maxCargoWeight;
 
 public:
-    Auto() :Transport()
-    {
+    CargoVehicle(const std::string& color, const std::string& brand, const std::string& model,
+        int year, int horsepower, const std::string& engineType, double maxCargoWeight)
+        : TransportVehicle(color, brand, model, year, horsepower, engineType), maxCargoWeight(maxCargoWeight) {}
 
-    };
-    Auto(string pname, int w, int d) :Transport(pname, w, d)
-    {
-
-    };
-};
-class Gruz : public Transport
-{
-
-public:
-    Gruz(void) :Transport()
-    {
-
-    }
-    Gruz(string pname, int w, int d) :Transport(pname, w, d)
-    {
-
+    void displayInfo() const override {
+        TransportVehicle::displayInfo();
+        std::cout << "Максимальная масса груза: " << maxCargoWeight << " кг\n";
     }
 };
-class Paroxod : public Transport
-{
+
+// Класс "Пассажирские транспортные средства"
+class PassengerVehicle : public TransportVehicle {
+private:
+    int passengerSeats;
 
 public:
-    Paroxod(void) :Transport()
-    {
+    PassengerVehicle(const std::string& color, const std::string& brand, const std::string& model,
+        int year, int horsepower, const std::string& engineType, int passengerSeats)
+        : TransportVehicle(color, brand, model, year, horsepower, engineType), passengerSeats(passengerSeats) {}
 
+    void displayInfo() const override {
+        TransportVehicle::displayInfo();
+        std::cout << "Количество мест для пассажиров: " << passengerSeats << "\n";
     }
-    Paroxod(string pname, int w, int d) :Transport(pname, w, d)
-    {
-
-    }
-    ~Paroxod(void);
 };
-class Plane : public Transport
-{
+
+// Класс "Легковые транспортные средства"
+class Car : public TransportVehicle {
+private:
+    double weight;
+    int numberOfDoors;
 
 public:
-    Plane(void) :Transport()
-    {
+    Car(const std::string& color, const std::string& brand, const std::string& model,
+        int year, int horsepower, const std::string& engineType, double weight, int numberOfDoors)
+        : TransportVehicle(color, brand, model, year, horsepower, engineType), weight(weight), numberOfDoors(numberOfDoors) {}
 
-    };
-    Plane(string pname, int w, int d) :Transport(pname, w, d)
-    {
-
-    };
+    void displayInfo() const override {
+        TransportVehicle::displayInfo();
+        std::cout << "Масса автомобиля: " << weight << " кг\n"
+            << "Количество дверей: " << numberOfDoors << "\n";
+    }
 };
-int main()
-{
-    setlocale(LC_ALL, "rus");
-    Auto Mazda("Mazda", 1990, 10);
-    Mazda.Print();
-    cout << endl;
-    system("pause");
+
+int main() {
+    system("chcp 1251");
+    system("cls");
+    CargoVehicle truck("Белый", "Volvo", "FH16", 2020, 750, "внутреннего сгорания", 25000);
+    PassengerVehicle bus("Синий", "Mercedes-Benz", "Sprinter", 2019, 190, "дизельный", 20);
+    Car sedan("Красный", "Toyota", "Camry", 2021, 301, "гибридный", 1500, 4);
+
+    std::cout << "Информация о грузовом транспортном средстве:\n";
+    truck.displayInfo();
+    std::cout << "\nИнформация о пассажирском транспортном средстве:\n";
+    bus.displayInfo();
+    std::cout << "\nИнформация о легковом транспортном средстве:\n";
+    sedan.displayInfo();
+
+    return 0;
 }
